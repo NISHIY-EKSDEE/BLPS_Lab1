@@ -13,8 +13,8 @@ class TagsEntity {
     @get:Basic
     var name: String? = null
 
-    @get:OneToMany(mappedBy = "tagsByTagId")
-    var productTagsById: Collection<ProductTagsEntity>? = null
+//    @get:OneToMany(mappedBy = "tagsByTagId")
+//    var productTagsById: Collection<ProductTagsEntity>? = null
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

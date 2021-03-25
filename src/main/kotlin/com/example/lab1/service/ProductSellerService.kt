@@ -8,6 +8,8 @@ import javax.validation.constraints.Min;
 @Validated
 interface ProductSellerService {
     fun getAllProducts() : List<SellerProductDTO>
-    fun getProduct(@Min(value = 1L, message = "Invalid product ID.") id: Long) : SellerProductDTO
+    fun getProduct(@Min(value = 1, message = "Invalid product ID.") id: Int) : SellerProductDTO
     fun create(product: SellerProductsEntity) : SellerProductDTO
+//    fun existById(prodId: Int) : Boolean
+    fun update(product: SellerProductsEntity)
 }

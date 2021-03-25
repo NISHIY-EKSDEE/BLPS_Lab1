@@ -15,6 +15,7 @@ class CitiesEntity {
 
     @get:OneToMany(mappedBy = "citiesByCityId")
     var pickupPointsById: Collection<PickupPointsEntity>? = null
+
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

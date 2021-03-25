@@ -7,7 +7,7 @@ data class SellerProductDTO(
         val sellerId: Int?,
         val productName: String,
         val productDescription: String,
-        val sellerName: String,
+        val sellerName: String?,
         val cost: Int,
         val totalAmount: Int
 )
@@ -29,9 +29,21 @@ object SellerProductAssembler{
                 ent.sellersBySellerId?.id,
                 ent.productsByProductId?.name!!,
                 ent.productsByProductId?.description!!,
-                ent.sellersBySellerId?.name!!,
+                ent.sellersBySellerId?.name,
                 ent.cost!!,
                 ent.totalAmount
         )
     }
+
+    fun buildShortDto(ent: SellerProductsEntity) : SellerProductShortDTO {
+        return SellerProductShortDTO(
+                ent.id,
+                ent.sellersBySellerId?.id,
+                ent.productsByProductId?.name!!,
+                ent.sellersBySellerId?.name!!,
+                ent.cost!!
+        )
+
+    }
+
 }

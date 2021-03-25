@@ -7,7 +7,8 @@ import javax.persistence.*
 class SellerProductsEntity {
     @get:Column(name = "id")
     @get:Id
-    var id = 0
+    @get:GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id : Int = 0
 
     @get:Column(name = "cost")
     @get:Basic
@@ -27,6 +28,7 @@ class SellerProductsEntity {
     @get:JoinColumn(name = "seller_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
     var sellersBySellerId: SellersEntity? = null
+
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

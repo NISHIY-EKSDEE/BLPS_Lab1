@@ -14,6 +14,12 @@ class ApiExceptionHandler {
         return ResponseEntity(error, HttpStatus.NOT_FOUND)
     }
 
+    @ExceptionHandler(WrongRequestException::class)
+    fun handle(e : WrongRequestException) : ResponseEntity<ErrorItem> {
+        val error = ErrorItem(e.message!!)
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    }
+
     data class ErrorItem(
             var message: String
     )

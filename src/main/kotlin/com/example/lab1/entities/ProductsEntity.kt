@@ -7,7 +7,8 @@ import javax.persistence.*
 class ProductsEntity {
     @get:Column(name = "id")
     @get:Id
-    var id = 0
+    @get:GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id : Int = 0
 
     @get:Column(name = "name")
     @get:Basic
@@ -17,8 +18,8 @@ class ProductsEntity {
     @get:Basic
     var description: String? = null
 
-    @get:OneToMany(mappedBy = "productsByProductId")
-    var productTagsById: Collection<ProductTagsEntity>? = null
+//    @get:OneToMany(mappedBy = "productsByProductId")
+//    var productTagsById: Collection<ProductTagsEntity>? = null
 
     @get:OneToMany(mappedBy = "productsByProductId")
     var sellerProductsById: Collection<SellerProductsEntity>? = null

@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SellerProductRepo : CrudRepository<SellerProductsEntity, Long>{
+interface SellerProductRepo : CrudRepository<SellerProductsEntity, Int>{
     fun save(sellerProductsEntity: SellerProductsEntity) : SellerProductsEntity
 }

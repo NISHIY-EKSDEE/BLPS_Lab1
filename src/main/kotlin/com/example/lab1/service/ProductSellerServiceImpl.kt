@@ -18,7 +18,7 @@ class ProductSellerServiceImpl: ProductSellerService {
         return sellerProdRepo.findAll().map(SellerProductAssembler::buildDto)
     }
 
-    override fun getProduct(id: Long): SellerProductDTO {
+    override fun getProduct(id: Int): SellerProductDTO {
         return SellerProductAssembler.buildDto(
                 sellerProdRepo.findById(id).orElseThrow{
                     ResourceNotFoundException(message = "Product not found!")
@@ -29,5 +29,10 @@ class ProductSellerServiceImpl: ProductSellerService {
     override fun create(product: SellerProductsEntity): SellerProductDTO {
          return SellerProductAssembler.buildDto(sellerProdRepo.save(product))
     }
+
+    override fun update(product: SellerProductsEntity) {
+        create(product)
+    }
+
 
 }
