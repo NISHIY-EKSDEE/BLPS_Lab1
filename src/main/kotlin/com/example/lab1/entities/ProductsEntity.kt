@@ -18,8 +18,8 @@ class ProductsEntity {
     @get:Basic
     var description: String? = null
 
-//    @get:OneToMany(mappedBy = "productsByProductId")
-//    var productTagsById: Collection<ProductTagsEntity>? = null
+    @get:OneToMany(mappedBy = "productsByProductId")
+    var productTagsById: Collection<ProductTagsEntity>? = null
 
     @get:OneToMany(mappedBy = "productsByProductId")
     var sellerProductsById: Collection<SellerProductsEntity>? = null
