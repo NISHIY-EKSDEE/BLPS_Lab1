@@ -1,6 +1,5 @@
 package com.example.lab1.service
 
-import com.example.lab1.beans.OrderStatuses
 import com.example.lab1.entities.OrderStatusEntity
 import com.example.lab1.repo.OrderStatusRepo
 import org.springframework.beans.factory.annotation.Autowired
