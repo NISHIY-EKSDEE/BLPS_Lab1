@@ -4,13 +4,18 @@ import com.example.lab1.dto.SellerProductDTO
 import com.example.lab1.entities.ProductsEntity
 import com.example.lab1.entities.SellerProductsEntity
 import com.example.lab1.entities.SellersEntity
+import com.example.lab1.entities.TagsEntity
 import com.example.lab1.exception.WrongRequestException
+import com.example.lab1.repo.TagRepo
 import com.example.lab1.service.ProductSellerService
 import com.example.lab1.service.ProductService
+import com.example.lab1.service.ProductTagService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
+import kotlin.collections.HashSet
 
 @RestController
 @RequestMapping("/api/products")
@@ -20,6 +25,10 @@ class ProductController {
     lateinit var productSellerService : ProductSellerService
     @Autowired
     lateinit var productService : ProductService
+    @Autowired
+    lateinit var productTagService: ProductTagService
+    @Autowired
+    lateinit var tagRepo: TagRepo
 
     //TODO добавить поиск по тегам
     @GetMapping
@@ -41,6 +50,22 @@ class ProductController {
     @ResponseStatus(HttpStatus.OK)
     fun getOne(@PathVariable productId: Int) : SellerProductDTO {
         return productSellerService.getProduct(productId)
+    }
+
+    @PostMapping("/bytags")
+    fun bytags(@RequestBody tagsForm : TagsForm) : ResponseEntity<Collection<SellerProductDTO>> {
+        var listOfTags: MutableSet<TagsEntity> = HashSet()
+
+        for (tag in tagsForm.tags) {
+            var tagEntities = tagRepo.findAllByName(tag)
+            listOfTags.addAll(tagEntities)
+        }
+
+        var productsByTags = productTagService.getProductsByTags(listOfTags)
+        var productSellerDTOs = productTagService.getSellerProductsDTOByProducts(productsByTags)
+
+
+        return ResponseEntity(productSellerDTOs, HttpStatus.CREATED)
     }
 
     @PostMapping
@@ -99,6 +124,10 @@ class ProductController {
             this.name = prodName
         }
     }
+
+    data class TagsForm(
+            val tags : List<String>
+    )
 
 
 

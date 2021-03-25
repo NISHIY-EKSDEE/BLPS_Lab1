@@ -7,7 +7,7 @@ import javax.persistence.*
 class ProductTagsEntity {
 
     @get:Id
-    var id: Long? = null
+    var id: Int? = null
 
     @get:JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
