@@ -27,7 +27,18 @@ class OrderServiceImpl : OrderService {
         })
     }
 
+    override fun findOrderByIdRetEnt(id: Int): OrdersEntity {
+        return orderRepo.findById(id).orElseThrow{
+            ResourceNotFoundException("Order not found!")
+        }
+    }
+
     override fun saveOrderEntity(order: OrdersEntity): OrderDTO {
         return OrderAssembler.buildDto(orderRepo.save(order))
     }
+
+    override fun saveOrderEntityAndRetEntity(order: OrdersEntity): OrdersEntity {
+        return orderRepo.save(order)
+    }
+
 }

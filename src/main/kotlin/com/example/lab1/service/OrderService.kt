@@ -9,5 +9,7 @@ import javax.validation.constraints.Min
 interface OrderService {
     fun findOrdersByUserId(@Min(value = 1L, message = "Invalid user ID.") id: Long) : List<OrderDTO>
     fun findOrderById(@Min(value = 1, message = "Invalid product ID.") id: Int) : OrderDTO
+    fun findOrderByIdRetEnt(id: Int): OrdersEntity
     fun saveOrderEntity(order: OrdersEntity) : OrderDTO
+    fun saveOrderEntityAndRetEntity(order: OrdersEntity) : OrdersEntity
 }

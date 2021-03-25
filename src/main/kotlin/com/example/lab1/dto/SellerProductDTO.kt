@@ -15,9 +15,9 @@ data class SellerProductDTO(
 data class SellerProductShortDTO(
         val sellerProductId: Int,
         val sellerId: Int?,
-        val productName: String,
-        val sellerName: String,
-        val cost: Int
+        val productName: String?,
+        val sellerName: String?,
+        val cost: Int?
 )
 
 
@@ -39,9 +39,9 @@ object SellerProductAssembler{
         return SellerProductShortDTO(
                 ent.id,
                 ent.sellersBySellerId?.id,
-                ent.productsByProductId?.name!!,
-                ent.sellersBySellerId?.name!!,
-                ent.cost!!
+                ent.productsByProductId?.name,
+                ent.sellersBySellerId?.name,
+                ent.cost
         )
 
     }

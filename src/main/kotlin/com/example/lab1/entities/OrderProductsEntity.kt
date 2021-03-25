@@ -7,6 +7,7 @@ import javax.persistence.*
 class OrderProductsEntity {
     @get:Column(name = "id")
     @get:Id
+    @get:GeneratedValue(strategy = GenerationType.IDENTITY)
     var id = 0
 
     @get:Column(name = "quantity")
