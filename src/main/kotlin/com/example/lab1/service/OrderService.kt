@@ -12,4 +12,5 @@ interface OrderService {
     fun findOrderByIdRetEnt(id: Int): OrdersEntity
     fun saveOrderEntity(order: OrdersEntity) : OrderDTO
     fun saveOrderEntityAndRetEntity(order: OrdersEntity) : OrdersEntity
+    fun deleteById(id: Int)
 }

@@ -42,6 +42,12 @@ class OrdersController {
         return orderService.findOrderById(orderId)
     }
 
+    @DeleteMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteOne(@PathVariable orderId: Int) {
+        orderService.deleteById(orderId)
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun makeOrder(@RequestBody form : OrderForm) : OrderShortDTO {

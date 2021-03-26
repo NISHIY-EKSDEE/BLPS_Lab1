@@ -41,4 +41,8 @@ class OrderServiceImpl : OrderService {
         return orderRepo.save(order)
     }
 
+    override fun deleteById(id: Int) {
+        orderRepo.deleteById(id)
+    }
+
 }
