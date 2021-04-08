@@ -26,10 +26,10 @@ object SellerProductAssembler{
     fun buildDto(ent: SellerProductsEntity) : SellerProductDTO {
         return SellerProductDTO(
                 ent.id,
-                ent.sellersBySellerId?.id,
-                ent.productsByProductId?.name!!,
-                ent.productsByProductId?.description!!,
-                ent.sellersBySellerId?.name,
+                ent.sellerBySellerId?.id,
+                ent.productByProductId?.name!!,
+                ent.productByProductId?.description!!,
+                ent.sellerBySellerId?.name,
                 ent.cost!!,
                 ent.totalAmount
         )
@@ -38,9 +38,9 @@ object SellerProductAssembler{
     fun buildShortDto(ent: SellerProductsEntity) : SellerProductShortDTO {
         return SellerProductShortDTO(
                 ent.id,
-                ent.sellersBySellerId?.id,
-                ent.productsByProductId?.name,
-                ent.sellersBySellerId?.name,
+                ent.sellerBySellerId?.id,
+                ent.productByProductId?.name,
+                ent.sellerBySellerId?.name,
                 ent.cost
         )
 

@@ -1,20 +1,19 @@
 package com.example.lab1.dto
 
-import com.example.lab1.entities.PickupPointsEntity
-import com.example.lab1.entities.SellerProductsEntity
+import com.example.lab1.entities.PickupPointEntity
 
 data class PickupPointDTO(
         val cityId : Int,
-        val city : String,
+//        val city : String,
         val address : String,
         val cost : Int
 )
 
 object PickupPointAssembler{
-    fun buildDto(ent: PickupPointsEntity) : PickupPointDTO {
+    fun buildDto(ent: PickupPointEntity) : PickupPointDTO {
         return PickupPointDTO(
-                ent.citiesByCityId!!.id,
-                ent.citiesByCityId?.name!!,
+                ent.cityByCityId!!.id,
+//                ent.citiesByCityId?.name!!,
                 ent.address!!,
                 ent.cost
         )

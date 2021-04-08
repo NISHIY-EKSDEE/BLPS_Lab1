@@ -5,7 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "orders", schema = "s265098", catalog = "studs")
-class OrdersEntity {
+class OrderEntity {
     @get:Column(name = "id")
     @get:Id
     @get:GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,16 +23,16 @@ class OrdersEntity {
     @get:Basic
     var deliveryAddress: String? = null
 
-    @get:OneToMany(mappedBy = "ordersByOrderId")
+    @get:OneToMany(mappedBy = "orderByOrderId")
     var orderProductsById: Collection<OrderProductsEntity>? = null
 
     @get:JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
-    var usersByUserId: UsersEntity? = null
+    var userByUserId: UserEntity? = null
 
     @get:JoinColumn(name = "pickup_point_id", referencedColumnName = "id")
     @get:ManyToOne
-    var pickupPointsByPickupPointId: PickupPointsEntity? = null
+    var pickupPointsByPickupPointId: PickupPointEntity? = null
 
     @get:JoinColumn(name = "status_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
@@ -40,11 +40,11 @@ class OrdersEntity {
 
     @get:JoinColumn(name = "payment_method_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
-    var paymentMethodsByPaymentMethodId: PaymentMethodsEntity? = null
+    var paymentMethodsByPaymentMethodId: PaymentMethodEntity? = null
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
-        val that = o as OrdersEntity
+        val that = o as OrderEntity
         if (id != that.id) return false
         if (isDelivery != that.isDelivery) return false
         if (if (date != null) date != that.date else that.date != null) return false

@@ -12,11 +12,9 @@ import com.example.lab1.service.OrderService
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import javax.transaction.Transactional
 
 
 @RestController
@@ -37,6 +35,11 @@ class OrdersController {
         return orderService.findOrdersByUserId(getUserId())
     }
 
+//    @GetMapping
+//    fun getAll() {
+//        TODO()
+//    }
+
     @GetMapping("/{orderId}")
     fun getOne(@PathVariable orderId: Int): OrderDTO {
         return orderService.findOrderById(orderId)
@@ -51,9 +54,9 @@ class OrdersController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun makeOrder(@RequestBody form : OrderForm) : OrderShortDTO {
-        var order: OrdersEntity = form.getEntity()
+        var order: OrderEntity = form.getEntity()
         order.date = java.sql.Date(System.currentTimeMillis())
-        order.usersByUserId = UsersEntity().apply { id = getUserId().toInt() } //TODO изменить когдя появятся роли
+        order.userByUserId = UserEntity().apply { id = getUserId().toInt() } //TODO изменить когдя появятся роли
 
         validateProductsInOrder(order.orderProductsById?.toList()!!)
         order = orderService.saveOrderEntityAndRetEntity(order)
@@ -91,15 +94,15 @@ class OrdersController {
             val paymentMethodId: Int,
             val orderStatusId: Int
     ) {
-        fun getEntity() : OrdersEntity {
-            val order = OrdersEntity()
+        fun getEntity() : OrderEntity {
+            val order = OrderEntity()
             order.deliveryAddress = deliveryAddress
             order.isDelivery = isDelivery
 
-            order.pickupPointsByPickupPointId = if (pickUpPointId != null) PickupPointsEntity().apply {
+            order.pickupPointsByPickupPointId = if (pickUpPointId != null) PickupPointEntity().apply {
                 this.id = pickUpPointId
             }  else null
-            order.paymentMethodsByPaymentMethodId = PaymentMethodsEntity().apply {
+            order.paymentMethodsByPaymentMethodId = PaymentMethodEntity().apply {
                 this.id = paymentMethodId
             }
             order.orderProductsById = products.map {
@@ -110,7 +113,7 @@ class OrdersController {
                     status.id = 1
 
 
-                    this.ordersByOrderId = order
+                    this.orderByOrderId = order
                     this.quantity = it.quantity
                     this.sellerProductsBySellerProductId = sellerProduct
                     this.orderProductStatusByStatusId = status

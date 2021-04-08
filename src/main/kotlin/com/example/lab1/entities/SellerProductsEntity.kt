@@ -23,11 +23,11 @@ class SellerProductsEntity {
 
     @get:JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
-    var productsByProductId: ProductsEntity? = null
+    var productByProductId: ProductEntity? = null
 
     @get:JoinColumn(name = "seller_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
-    var sellersBySellerId: SellersEntity? = null
+    var sellerBySellerId: SellerEntity? = null
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

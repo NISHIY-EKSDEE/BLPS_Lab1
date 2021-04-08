@@ -4,16 +4,16 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "product_tags", schema = "s265098", catalog = "studs")
-class ProductTagsEntity {
+class ProductTagEntity {
 
     @get:Id
     var id: Int? = null
 
     @get:JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
-    var productsByProductId: ProductsEntity? = null
+    var productByProductId: ProductEntity? = null
 
     @get:JoinColumn(name = "tag_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
-    var tagsByTagId: TagsEntity? = null
+    var tagByTagId: TagEntity? = null
 }

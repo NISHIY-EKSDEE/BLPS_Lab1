@@ -1,10 +1,10 @@
 package com.example.lab1.controller
 
 import com.example.lab1.dto.SellerProductDTO
-import com.example.lab1.entities.ProductsEntity
+import com.example.lab1.entities.ProductEntity
 import com.example.lab1.entities.SellerProductsEntity
-import com.example.lab1.entities.SellersEntity
-import com.example.lab1.entities.TagsEntity
+import com.example.lab1.entities.SellerEntity
+import com.example.lab1.entities.TagEntity
 import com.example.lab1.exception.WrongRequestException
 import com.example.lab1.repo.TagRepo
 import com.example.lab1.service.ProductSellerService
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.*
 import kotlin.collections.HashSet
 
 @RestController
@@ -30,7 +29,6 @@ class ProductController {
     @Autowired
     lateinit var tagRepo: TagRepo
 
-    //TODO добавить поиск по тегам
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun list(
@@ -52,34 +50,33 @@ class ProductController {
         return productSellerService.getProduct(productId)
     }
 
-    @PostMapping("/bytags")
+    @GetMapping("/bytags")
     fun bytags(@RequestBody tagsForm : TagsForm) : ResponseEntity<Collection<SellerProductDTO>> {
-        var listOfTags: MutableSet<TagsEntity> = HashSet()
+        val listOfTags: MutableSet<TagEntity> = HashSet()
 
         for (tag in tagsForm.tags) {
-            var tagEntities = tagRepo.findAllByName(tag)
+            val tagEntities = tagRepo.findAllByName(tag)
             listOfTags.addAll(tagEntities)
         }
 
-        var productsByTags = productTagService.getProductsByTags(listOfTags)
-        var productSellerDTOs = productTagService.getSellerProductsDTOByProducts(productsByTags)
+        val productsByTags = productTagService.getProductsByTags(listOfTags)
+        val productSellerDTOs = productTagService.getSellerProductsDTOByProducts(productsByTags)
 
-
-        return ResponseEntity(productSellerDTOs, HttpStatus.CREATED)
+        return ResponseEntity(productSellerDTOs, HttpStatus.OK)
     }
 
     @PostMapping
     fun save(@RequestBody productForm : ProductForm) : ResponseEntity<SellerProductDTO> {
         //TODO вынести логику в отдельный сервис и обернуть в транзакцию
-        val productEnt: ProductsEntity = productService.create(
+        val productEnt: ProductEntity = productService.create(
                 productForm.getProductEnt()
         )
 
-        val seller: SellersEntity = getSeller()
+        val seller: SellerEntity = getSeller()
 
         val sellerProduct: SellerProductsEntity = SellerProductsEntity().apply {
-            this.productsByProductId = productEnt
-            this.sellersBySellerId = seller
+            this.productByProductId = productEnt
+            this.sellerBySellerId = seller
             this.cost = productForm.cost
             this.totalAmount = productForm.totalAmount
 
@@ -101,6 +98,11 @@ class ProductController {
 
     }
 
+    @DeleteMapping("/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@PathVariable productId: Int) {
+        productSellerService.delete(productId)
+    }
 
     private fun sellerProductValidate(ent: SellerProductsEntity) {
         if (ent.cost == null) throw WrongRequestException("The cost can't be null!")
@@ -109,8 +111,8 @@ class ProductController {
     }
 
     //TODO убрать когда появятся роли
-    private fun getSeller() : SellersEntity {
-        return SellersEntity().apply { id=1 }
+    private fun getSeller() : SellerEntity {
+        return SellerEntity().apply { id=1 }
     }
 
     data class ProductForm(
@@ -119,7 +121,7 @@ class ProductController {
             val prodName : String,
             val prodDescription : String
     ) {
-        fun getProductEnt() : ProductsEntity = ProductsEntity().apply {
+        fun getProductEnt() : ProductEntity = ProductEntity().apply {
             this.description = prodDescription
             this.name = prodName
         }

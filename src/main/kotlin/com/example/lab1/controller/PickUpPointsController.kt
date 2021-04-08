@@ -1,8 +1,8 @@
 package com.example.lab1.controller
 
 import com.example.lab1.dto.PickupPointDTO
-import com.example.lab1.entities.CitiesEntity
-import com.example.lab1.entities.PickupPointsEntity
+import com.example.lab1.entities.CityEntity
+import com.example.lab1.entities.PickupPointEntity
 import com.example.lab1.service.PickupPointService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -37,13 +37,13 @@ class PickUpPointsController {
             val deliveryCost: Int,
             val cityId: Int
     ) {
-        fun getEntity() : PickupPointsEntity{
-            val city = CitiesEntity().apply { this.id = cityId }
+        fun getEntity() : PickupPointEntity{
+            val city = CityEntity().apply { this.id = cityId }
 
-            return PickupPointsEntity().apply {
+            return PickupPointEntity().apply {
                 address = pointAddress
                 cost = deliveryCost
-                citiesByCityId = city
+                cityByCityId = city
             }
         }
     }

@@ -3,8 +3,8 @@ package com.example.lab1.entities
 import javax.persistence.*
 
 @Entity
-@Table(name = "payment_methods", schema = "s265098", catalog = "studs")
-class PaymentMethodsEntity {
+@Table(name = "tags", schema = "s265098", catalog = "studs")
+class TagEntity {
     @get:Column(name = "id")
     @get:Id
     var id = 0
@@ -13,12 +13,12 @@ class PaymentMethodsEntity {
     @get:Basic
     var name: String? = null
 
-    @get:OneToMany(mappedBy = "paymentMethodsByPaymentMethodId")
-    var ordersById: Collection<OrdersEntity>? = null
+//    @get:OneToMany(mappedBy = "tagsByTagId")
+//    var productTagsById: Collection<ProductTagsEntity>? = null
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
-        val that = o as PaymentMethodsEntity
+        val that = o as TagEntity
         if (id != that.id) return false
         return !if (name != null) name != that.name else that.name != null
     }

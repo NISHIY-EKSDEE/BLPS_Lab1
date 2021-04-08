@@ -1,10 +1,7 @@
 package com.example.lab1.dto
 
-import com.example.lab1.entities.OrderProductStatusEntity
 import com.example.lab1.entities.OrderProductsEntity
-import com.example.lab1.entities.OrdersEntity
-import com.example.lab1.entities.PickupPointsEntity
-import java.util.*
+import com.example.lab1.entities.OrderEntity
 
 data class OrderDTO(
         val id: Int,
@@ -39,7 +36,7 @@ data class OrderProductShortDTO(
 )
 
 object OrderAssembler{
-    fun buildDto(ent: OrdersEntity) : OrderDTO {
+    fun buildDto(ent: OrderEntity) : OrderDTO {
         return OrderDTO(
                 ent.id,
                 ent.date!!,
@@ -52,7 +49,7 @@ object OrderAssembler{
         )
     }
 
-    fun buildShortDto(ent: OrdersEntity) : OrderShortDTO {
+    fun buildShortDto(ent: OrderEntity) : OrderShortDTO {
         return OrderShortDTO(
                 ent.id,
                 ent.date!!,
@@ -61,7 +58,7 @@ object OrderAssembler{
                 ent.orderProductsById?.map {
                     OrderProductShortDTO(
                             it.sellerProductsBySellerProductId!!.id,
-                            it.ordersByOrderId!!.id,
+                            it.orderByOrderId!!.id,
                             it.quantity
                     )
                 }!!.toList()
@@ -73,7 +70,7 @@ object OrderProductAssembler{
     fun buildDTO(ent: OrderProductsEntity) : OrderProductDTO {
         return OrderProductDTO(
                 SellerProductAssembler.buildShortDto(ent.sellerProductsBySellerProductId!!),
-                ent.ordersByOrderId?.id!!,
+                ent.orderByOrderId?.id!!,
                 ent.quantity,
                 ent.orderProductStatusByStatusId?.name
         )

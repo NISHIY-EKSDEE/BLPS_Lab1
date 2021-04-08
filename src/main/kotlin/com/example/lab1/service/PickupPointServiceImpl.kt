@@ -2,7 +2,7 @@ package com.example.lab1.service
 
 import com.example.lab1.dto.PickupPointAssembler
 import com.example.lab1.dto.PickupPointDTO
-import com.example.lab1.entities.PickupPointsEntity
+import com.example.lab1.entities.PickupPointEntity
 import com.example.lab1.repo.PickupPointRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
@@ -26,7 +26,7 @@ class PickupPointServiceImpl : PickupPointService {
         )
     }
 
-    override fun savePoint(point: PickupPointsEntity): PickupPointDTO{
+    override fun savePoint(point: PickupPointEntity): PickupPointDTO{
         return PickupPointAssembler.buildDto(point)
     }
 }

@@ -1,6 +1,6 @@
 package com.example.lab1.controller
 
-import com.example.lab1.entities.CitiesEntity
+import com.example.lab1.entities.CityEntity
 import com.example.lab1.service.CityService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -15,12 +15,12 @@ class CitiesController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun list() : Iterable<CitiesEntity> {
+    fun list() : Iterable<CityEntity> {
         return citiesService.findAll()
     }
 
     @PostMapping
-    fun create(@RequestBody city : CityForm) : ResponseEntity<CitiesEntity> {
+    fun create(@RequestBody city : CityForm) : ResponseEntity<CityEntity> {
         return ResponseEntity(
                 citiesService.save(city.getEntity()),
                 HttpStatus.CREATED
@@ -30,8 +30,8 @@ class CitiesController {
     data class CityForm(
             val cityName : String
     ) {
-        fun getEntity() : CitiesEntity {
-            return CitiesEntity().apply {
+        fun getEntity() : CityEntity {
+            return CityEntity().apply {
                 name = cityName
             }
         }

@@ -2,8 +2,8 @@ package com.example.lab1.service
 
 import com.example.lab1.dto.OrderAssembler
 import com.example.lab1.dto.OrderDTO
-import com.example.lab1.entities.OrdersEntity
-import com.example.lab1.entities.UsersEntity
+import com.example.lab1.entities.OrderEntity
+import com.example.lab1.entities.UserEntity
 import com.example.lab1.repo.OrderRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
@@ -16,9 +16,9 @@ class OrderServiceImpl : OrderService {
     lateinit var orderRepo: OrderRepo
 
     override fun findOrdersByUserId(id: Long): List<OrderDTO> {
-        val user = UsersEntity()
+        val user = UserEntity()
         user.id = id.toInt()
-        return orderRepo.findAllByUsersByUserId(user).map(OrderAssembler::buildDto)
+        return orderRepo.findAllByUserByUserId(user).map(OrderAssembler::buildDto)
     }
 
     override fun findOrderById(id: Int): OrderDTO {
@@ -27,17 +27,17 @@ class OrderServiceImpl : OrderService {
         })
     }
 
-    override fun findOrderByIdRetEnt(id: Int): OrdersEntity {
+    override fun findOrderByIdRetEnt(id: Int): OrderEntity {
         return orderRepo.findById(id).orElseThrow{
             ResourceNotFoundException("Order not found!")
         }
     }
 
-    override fun saveOrderEntity(order: OrdersEntity): OrderDTO {
+    override fun saveOrderEntity(order: OrderEntity): OrderDTO {
         return OrderAssembler.buildDto(orderRepo.save(order))
     }
 
-    override fun saveOrderEntityAndRetEntity(order: OrdersEntity): OrdersEntity {
+    override fun saveOrderEntityAndRetEntity(order: OrderEntity): OrderEntity {
         return orderRepo.save(order)
     }
 

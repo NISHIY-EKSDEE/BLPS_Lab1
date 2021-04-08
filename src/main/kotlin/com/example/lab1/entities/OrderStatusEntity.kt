@@ -14,7 +14,7 @@ class OrderStatusEntity {
     var name: String? = null
 
     @get:OneToMany(mappedBy = "orderStatusByStatusId")
-    var ordersById: Collection<OrdersEntity>? = null
+    var orderById: Collection<OrderEntity>? = null
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

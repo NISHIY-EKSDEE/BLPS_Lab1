@@ -12,4 +12,5 @@ interface ProductSellerService {
     fun create(product: SellerProductsEntity) : SellerProductDTO
 //    fun existById(prodId: Int) : Boolean
     fun update(product: SellerProductsEntity)
+    fun delete(id: Int)
 }

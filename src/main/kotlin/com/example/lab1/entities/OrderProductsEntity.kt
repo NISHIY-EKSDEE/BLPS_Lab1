@@ -20,7 +20,7 @@ class OrderProductsEntity {
 
     @get:JoinColumn(name = "order_id", referencedColumnName = "id")
     @get:ManyToOne
-    var ordersByOrderId: OrdersEntity? = null
+    var orderByOrderId: OrderEntity? = null
 
     @get:JoinColumn(name = "status_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
