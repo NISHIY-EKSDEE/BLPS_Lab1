@@ -164,7 +164,4 @@ class ProductController {
     data class TagsForm(
             val tags : List<String>
     )
-
-
-
 }
