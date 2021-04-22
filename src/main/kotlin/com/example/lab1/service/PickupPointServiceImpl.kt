@@ -27,6 +27,6 @@ class PickupPointServiceImpl : PickupPointService {
     }
 
     override fun savePoint(point: PickupPointEntity): PickupPointDTO{
-        return PickupPointAssembler.buildDto(point)
+        return PickupPointAssembler.buildDto(pickupPointRepo.save(point))
     }
 }
