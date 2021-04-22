@@ -1,6 +1,7 @@
 package com.example.lab1.controller
 
-import com.example.lab1.entities.UserEntity
+import com.example.lab1.entities.Role
+import com.example.lab1.entities.User
 import com.example.lab1.exception.UserAlreadyExistsException
 import com.example.lab1.exception.WrongRequestException
 import com.example.lab1.service.UserService
@@ -8,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+
 
 @RestController
 class RegistrationController {
@@ -30,16 +31,12 @@ class RegistrationController {
             throw UserAlreadyExistsException("user with this login already exists");
         }
 
-        val user = UserEntity()
-        user.login = registrationRequest.login
+        val user = User()
+        user.username = registrationRequest.login
         user.password = registrationRequest.password
+        user.role = Role.CLIENT
 
         userService.saveUser(user)
-    }
-
-    @GetMapping("/reg")
-    fun regReq(): RegistrationRequest {
-        return RegistrationRequest("5", "2", "3")
     }
 
     data class RegistrationRequest(

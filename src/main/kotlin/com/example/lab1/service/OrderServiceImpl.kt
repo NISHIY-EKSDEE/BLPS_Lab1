@@ -3,10 +3,10 @@ package com.example.lab1.service
 import com.example.lab1.dto.OrderAssembler
 import com.example.lab1.dto.OrderDTO
 import com.example.lab1.entities.OrderEntity
-import com.example.lab1.entities.UserEntity
+import com.example.lab1.entities.User
+import com.example.lab1.exception.ResourceNotFoundException
 import com.example.lab1.repo.OrderRepo
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,8 +16,8 @@ class OrderServiceImpl : OrderService {
     lateinit var orderRepo: OrderRepo
 
     override fun findOrdersByUserId(id: Long): List<OrderDTO> {
-        val user = UserEntity()
-        user.id = id.toInt()
+        val user = User()
+        user.id = id.toInt().toLong()
         return orderRepo.findAllByUserByUserId(user).map(OrderAssembler::buildDto)
     }
 

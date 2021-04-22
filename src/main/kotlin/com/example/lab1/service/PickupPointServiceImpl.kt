@@ -3,9 +3,9 @@ package com.example.lab1.service
 import com.example.lab1.dto.PickupPointAssembler
 import com.example.lab1.dto.PickupPointDTO
 import com.example.lab1.entities.PickupPointEntity
+import com.example.lab1.exception.ResourceNotFoundException
 import com.example.lab1.repo.PickupPointRepo
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.stereotype.Service
 
 @Service

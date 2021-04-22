@@ -1,18 +1,15 @@
 package com.example.lab1.controller
 
 import com.example.lab1.dto.SellerProductDTO
-import com.example.lab1.entities.ProductEntity
-import com.example.lab1.entities.SellerProductsEntity
-import com.example.lab1.entities.SellerEntity
-import com.example.lab1.entities.TagEntity
+import com.example.lab1.entities.*
 import com.example.lab1.exception.WrongRequestException
 import com.example.lab1.repo.TagRepo
-import com.example.lab1.service.ProductSellerService
-import com.example.lab1.service.ProductService
-import com.example.lab1.service.ProductTagService
+import com.example.lab1.service.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 import kotlin.collections.HashSet
 
@@ -27,8 +24,18 @@ class ProductController {
     @Autowired
     lateinit var productTagService: ProductTagService
     @Autowired
+    lateinit var userService: UserService
+
+    @Autowired
+    lateinit var sellerService: SellerService
+
+    @Autowired
     lateinit var tagRepo: TagRepo
 
+    /**
+     * Метод, который вызывается, когда клиенты пытаются найти какой-то продукт
+     * используя наш маркетплейс.
+     */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun list(
@@ -44,12 +51,20 @@ class ProductController {
                 }
     }
 
+    /**
+     * Метод, который вызывается, когда клиент хочет получить подробную информацию о
+     * конкретном продукте.
+     */
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
     fun getOne(@PathVariable productId: Int) : SellerProductDTO {
         return productSellerService.getProduct(productId)
     }
 
+    /**
+     * Метод, который позволяет пользователю с ролью CLIENT найти информацию о продукте, используя
+     * набор тегов.
+     */
     @GetMapping("/bytags")
     fun bytags(@RequestBody tagsForm : TagsForm) : ResponseEntity<Collection<SellerProductDTO>> {
         val listOfTags: MutableSet<TagEntity> = HashSet()
@@ -65,6 +80,10 @@ class ProductController {
         return ResponseEntity(productSellerDTOs, HttpStatus.OK)
     }
 
+    /**
+     * Метод, который доступен только пользователю с ролью SHOP. Позволяет ДОБАВИТЬ
+     * новый продукт.
+     */
     @PostMapping
     fun save(@RequestBody productForm : ProductForm) : ResponseEntity<SellerProductDTO> {
         //TODO вынести логику в отдельный сервис и обернуть в транзакцию
@@ -90,14 +109,23 @@ class ProductController {
         return ResponseEntity(dto, HttpStatus.CREATED)
     }
 
+    /**
+     * Метод, который доступен только пользователю с ролью SHOP.
+     * Данный метод позволяет пользователю ИЗМЕНИТЬ какой-то продукт, который
+     * ему принадлежит.
+     */
     @PutMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody productForm: ProductForm, @PathVariable productId: Int) {
+        TODO()
         var productSeller = productSellerService.getProduct(productId)
-
-
     }
 
+    /**
+     * Метод, который доступен только пользователю с ролью SHOP.
+     * Данный метод позволяет пользователю УДАЛИТЬ какой-то продукт, который
+     * ему принадлежит.
+     */
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable productId: Int) {
@@ -110,9 +138,15 @@ class ProductController {
         if (ent.totalAmount < 0 ) throw WrongRequestException("The total amount can't be less than zero!")
     }
 
-    //TODO убрать когда появятся роли
     private fun getSeller() : SellerEntity {
-        return SellerEntity().apply { id=1 }
+        var userDetails: UserDetails = SecurityContextHolder.getContext().authentication.principal as UserDetails
+        val user: User = userService.getUserByUsername(userDetails.username) ?:
+            throw WrongRequestException("User not found!")
+
+        val seller = sellerService.getSellerByUser(user) ?:
+            throw WrongRequestException("Seller not found!")
+
+        return seller
     }
 
     data class ProductForm(

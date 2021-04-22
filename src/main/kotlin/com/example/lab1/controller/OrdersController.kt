@@ -6,15 +6,19 @@ import com.example.lab1.dto.OrderAssembler
 import com.example.lab1.dto.OrderDTO
 import com.example.lab1.dto.OrderShortDTO
 import com.example.lab1.entities.*
+import com.example.lab1.exception.ResourceNotFoundException
 import com.example.lab1.exception.WrongRequestException
 import com.example.lab1.service.OrderProductService
 import com.example.lab1.service.OrderService
+import com.example.lab1.service.UserService
+import io.swagger.annotations.ApiOperation
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
+import org.springframework.transaction.support.TransactionTemplate
 
 
 @RestController
@@ -27,59 +31,89 @@ class OrdersController {
     @Autowired
     lateinit var orderProductsService: OrderProductService
 
-    @PersistenceContext
-    private val entityManager: EntityManager? = null
+    @Autowired
+    lateinit var userService: UserService
 
+    @Autowired
+    lateinit var template: TransactionTemplate
+
+    /**
+     * Этот метод вызывается, когда CLIENT хочет получить список своих заказов.
+     */
+    @ApiOperation(value = "\${OrdersController.listByUser()}")
     @GetMapping
-    fun list() : List<OrderDTO> {
+    fun listByUser() : List<OrderDTO> {
         return orderService.findOrdersByUserId(getUserId())
     }
 
-//    @GetMapping
-//    fun getAll() {
-//        TODO()
-//    }
-
-    @GetMapping("/{orderId}")
-    fun getOne(@PathVariable orderId: Int): OrderDTO {
-        return orderService.findOrderById(orderId)
+    /**
+     * По-хорошему этот метод вызывается DELIVERY для того, чтобы увидеть какие заказы были сделаны.
+     * Возможна фильтрация по статусу.
+     */
+    @GetMapping("/all")
+    fun list() : List<OrderDTO> {
+        TODO()
     }
 
+    /**
+     * Этот метод вызываетсся, когда CLIENT хочет получить подробную информацию о своём заказе.
+     */
+    @GetMapping("/{orderId}")
+    fun getOne(@PathVariable orderId: Int): OrderDTO {
+        val orders = orderService.findOrdersByUserId(getUserId())
+        val order = orders.firstOrNull { it.id == orderId } ?:
+            throw ResourceNotFoundException("У данного пользователя нет товара с таким id!")
+
+        return order
+    }
+
+    /**
+     * [НЕ ИСПОЛЬЗУЕТСЯ]
+     */
     @DeleteMapping("/{orderId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteOne(@PathVariable orderId: Int) {
         orderService.deleteById(orderId)
     }
 
+    /**
+     * Этот метод вызывается, когда CLIENT делает заказ.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun makeOrder(@RequestBody form : OrderForm) : OrderShortDTO {
-        var order: OrderEntity = form.getEntity()
-        order.date = java.sql.Date(System.currentTimeMillis())
-        order.userByUserId = UserEntity().apply { id = getUserId().toInt() } //TODO изменить когдя появятся роли
+        return template.execute {
+            var order: OrderEntity = form.getEntity()
+            order.date = java.sql.Date(System.currentTimeMillis())
+            order.userByUserId = User().apply { id = getUserId().toInt().toLong() }
 
-        validateProductsInOrder(order.orderProductsById?.toList()!!)
-        order = orderService.saveOrderEntityAndRetEntity(order)
+            validateProductsInOrder(order.orderProductsById?.toList()!!)
+            order = orderService.saveOrderEntityAndRetEntity(order)
 
-        order.orderProductsById!!.map {
-            orderProductsService.save(it)
-        }
+            order.orderProductsById!!.map {
+                orderProductsService.save(it)
+            }
 
-        print("order id: " + order.id)
-        //Thread.sleep(5000)
-        //val dto = getOne(orderId = order.id) //orderService.findOrderById(order.id)
+            print("order id: " + order.id)
 
-        return OrderAssembler.buildShortDto(order)
+            OrderAssembler.buildShortDto(order)
+        } ?: throw Exception("Makeorder error")
     }
 
+    /**
+     * Этот метод используется DELIVERY для того, чтобы изменить статус заказа.
+     */
     @PutMapping
     fun updateOrder() {
         TODO()
     }
 
-    //TODO изменить когда появятся роли
     private fun getUserId(): Long {
-        return 1;
+        val userDetails: UserDetails = SecurityContextHolder.getContext().authentication.principal as UserDetails
+        val user : User = userService.getUserByUsername(userDetails.username) ?:
+            throw ResourceNotFoundException("User not found!")
+
+        return user.id;
     }
 
     private fun validateProductsInOrder(list: List<OrderProductsEntity>) {

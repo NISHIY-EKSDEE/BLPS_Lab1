@@ -23,6 +23,8 @@ class ProductEntity {
 
     @get:OneToMany(mappedBy = "productByProductId")
     var sellerProductsById: Collection<SellerProductsEntity>? = null
+
+
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

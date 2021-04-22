@@ -28,7 +28,7 @@ class OrderEntity {
 
     @get:JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
-    var userByUserId: UserEntity? = null
+    var userByUserId: User? = null
 
     @get:JoinColumn(name = "pickup_point_id", referencedColumnName = "id")
     @get:ManyToOne

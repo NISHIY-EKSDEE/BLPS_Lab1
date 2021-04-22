@@ -17,16 +17,27 @@ class PickUpPointsController {
     lateinit var pickupPointService: PickupPointService
 
     //TODO сделать фильтрацию
+
+
+    /**
+     * ALL могут посмотреть список всех точек откуда можно забрать товар.
+     */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun list() : List<PickupPointDTO> = pickupPointService.getAllPoint()
+    fun list(): List<PickupPointDTO> = pickupPointService.getAllPoint()
 
+    /**
+     * ALL могут посмотреть подробную информацию о точке, откуда можно забрать товар
+     */
     @GetMapping("/{pointId}")
     @ResponseStatus(HttpStatus.OK)
     fun getOne(@PathVariable pointId: Int) = pickupPointService.getPointById(pointId)
 
+    /**
+     * DELIVERY может добавить новую точку на карту.
+     */
     @PostMapping
-    fun create(@RequestBody form : PointForm) : ResponseEntity<PickupPointDTO> {
+    fun create(@RequestBody form: PointForm): ResponseEntity<PickupPointDTO> {
         val point = form.getEntity()
 
         return ResponseEntity(pickupPointService.savePoint(point), HttpStatus.CREATED)
@@ -37,7 +48,7 @@ class PickUpPointsController {
             val deliveryCost: Int,
             val cityId: Int
     ) {
-        fun getEntity() : PickupPointEntity{
+        fun getEntity(): PickupPointEntity {
             val city = CityEntity().apply { this.id = cityId }
 
             return PickupPointEntity().apply {
@@ -47,7 +58,6 @@ class PickUpPointsController {
             }
         }
     }
-
 
 
 }
