@@ -1,10 +1,8 @@
 package com.example.lab1.repo
 
-import com.example.lab1.entities.SellerProductsEntity
-import org.springframework.data.repository.CrudRepository
-import org.springframework.stereotype.Repository
+import com.example.lab1.entities.SellersProduct
+import org.springframework.data.jpa.repository.JpaRepository
 
-@Repository
-interface SellerProductRepo : CrudRepository<SellerProductsEntity, Int>{
-    fun save(sellerProductsEntity: SellerProductsEntity) : SellerProductsEntity
+interface SellerProductRepo : JpaRepository<SellersProduct, Int> {
+    fun save(sellerProductsEntity: SellersProduct) : SellersProduct
 }

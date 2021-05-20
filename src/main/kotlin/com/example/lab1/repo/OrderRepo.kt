@@ -1,11 +1,8 @@
 package com.example.lab1.repo
 
-import com.example.lab1.entities.OrderEntity
-import com.example.lab1.entities.User
-import org.springframework.data.repository.CrudRepository
-import org.springframework.stereotype.Repository
+import com.example.lab1.entities.Order
+import org.springframework.data.jpa.repository.JpaRepository
 
-@Repository
-interface OrderRepo: CrudRepository<OrderEntity, Int> {
-    fun findAllByUserByUserId(userByUserId: User) : List<OrderEntity>
+interface OrderRepo: JpaRepository<Order, Int> {
+    fun findAllByClientId(clientId: Int) : List<Order>
 }

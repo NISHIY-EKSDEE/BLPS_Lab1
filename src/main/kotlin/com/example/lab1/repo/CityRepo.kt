@@ -1,7 +1,7 @@
 package com.example.lab1.repo
 
-import com.example.lab1.entities.CityEntity
-import org.springframework.data.repository.CrudRepository
+import com.example.lab1.entities.City
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface CityRepo : CrudRepository<CityEntity, Int> {
+interface CityRepo : JpaRepository<City, Int> {
 }
