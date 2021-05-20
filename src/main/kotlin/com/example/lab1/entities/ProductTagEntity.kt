@@ -11,7 +11,7 @@ class ProductTagEntity {
 
     @get:JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne
-    var productByProductId: ProductEntity? = null
+    var product: Product? = null
 
     @get:JoinColumn(name = "tag_id", referencedColumnName = "id", nullable = false)
     @get:ManyToOne

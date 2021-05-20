@@ -9,7 +9,7 @@ import javax.persistence.*
 class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0
+    var id: Int = 0
 
     @Column(unique = true, nullable = false)
     var username: String = ""
@@ -18,5 +18,5 @@ class User {
     var password: String = ""
 
     @Enumerated(EnumType.STRING)
-    var role: Role = Role.CLIENT
+    var role: Role = Role.ROLE_CLIENT
 }
