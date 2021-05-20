@@ -34,7 +34,7 @@ class RegistrationController {
         val user = User()
         user.username = registrationRequest.login
         user.password = registrationRequest.password
-        user.role = Role.CLIENT
+        user.role = Role.ROLE_CLIENT
 
         userService.saveUser(user)
     }

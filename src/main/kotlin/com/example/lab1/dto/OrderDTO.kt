@@ -1,78 +1,68 @@
 package com.example.lab1.dto
 
-import com.example.lab1.entities.OrderProductsEntity
-import com.example.lab1.entities.OrderEntity
+import com.example.lab1.entities.*
+import java.sql.Date
 
-data class OrderDTO(
+data class OrderResponse(
         val id: Int,
-        val date: java.sql.Date,
+        val date: Date,
+        val status: String,
+        val payment: String,
+        val products: List<ProductResponse>,
+
         val isDelivery: Boolean,
-        val pickupPointId: Int?,
-        val pickupPointAddress: String,
-        val status: String?,
-        val payment: String?,
-        val products: List<OrderProductDTO>
+        val address: String?, //если доставка
+        val pickupPointId: Int? //если самовывоз
 )
 
-data class OrderProductDTO(
-        val product: SellerProductShortDTO,
-        var orderId: Int,
-        val quantity: Int,
-        val status: String?
-)
-
-data class OrderShortDTO(
-        val id: Int,
-        val date: java.sql.Date,
-        val isDelivery: Boolean,
-        val pickupPointId: Int?,
-        val products: List<OrderProductShortDTO>
-)
-
-data class OrderProductShortDTO(
-        val sellerProductId: Int,
-        var orderId: Int,
+data class ProductResponse(
+        val product: SProductShort,
         val quantity: Int
 )
 
-object OrderAssembler{
-    fun buildDto(ent: OrderEntity) : OrderDTO {
-        return OrderDTO(
+data class StatusRequest(
+        val statusId: Int
+)
+
+object OrderResponseAssembler{
+    fun buildDto(ent: Order) : OrderResponse{
+        return OrderResponse(
                 ent.id,
-                ent.date!!,
+                ent.date,
+                ent.status.name,
+                ent.paymentMethod.name,
+                products(ent.products),
+
                 ent.isDelivery,
-                ent.pickupPointsByPickupPointId?.id,
-                ent.pickupPointsByPickupPointId!!.address!!,
-                ent.orderStatusByStatusId?.name,
-                ent.paymentMethodsByPaymentMethodId?.name,
-                ent.orderProductsById?.map(OrderProductAssembler::buildDTO)?.toList()!!
+                ent.deliveryAddress ?: "",
+                ent.pickupPoint?.id ?: -1
         )
     }
 
-    fun buildShortDto(ent: OrderEntity) : OrderShortDTO {
-        return OrderShortDTO(
-                ent.id,
-                ent.date!!,
-                ent.isDelivery,
-                ent.pickupPointsByPickupPointId?.id,
-                ent.orderProductsById?.map {
-                    OrderProductShortDTO(
-                            it.sellerProductsBySellerProductId!!.id,
-                            it.orderByOrderId!!.id,
-                            it.quantity
-                    )
-                }!!.toList()
-        )
+    private fun products(products: Collection<OrderProducts>) : List<ProductResponse>{
+        return products.map { ProductResponse(
+            SProductShortAssembler.buildDto(it.product),
+            it.quantity
+        ) }
     }
 }
 
-object OrderProductAssembler{
-    fun buildDTO(ent: OrderProductsEntity) : OrderProductDTO {
-        return OrderProductDTO(
-                SellerProductAssembler.buildShortDto(ent.sellerProductsBySellerProductId!!),
-                ent.orderByOrderId?.id!!,
-                ent.quantity,
-                ent.orderProductStatusByStatusId?.name
+data class OrderRequest (
+            val products : List<BucketProductDTO>,
+            val isDelivery : Boolean,
+            val pickUpPointId : Int?,
+            val deliveryAddress: String?,
+            val paymentMethodId: Int
+) {
+    fun getEntity() : Order{
+        return Order(
+                isDelivery = isDelivery,
+                pickupPoint = if (!isDelivery && pickUpPointId != null)
+                    PickupPoint(pickUpPointId) else null,
+                deliveryAddress = if (isDelivery && deliveryAddress != null)
+                    deliveryAddress else null,
+                paymentMethod = PaymentMethod(id = paymentMethodId),
+                client = User()
         )
     }
 }
