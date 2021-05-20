@@ -20,26 +20,31 @@ class WebSecurityConfig(
     override fun configure(http: HttpSecurity) {
         http.csrf().disable()
 
+//        http.authorizeRequests().antMatchers("/").permitAll();
+
         http.authorizeRequests()
                 /* PRODUCTS */
                 .antMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/products").hasAuthority("SHOP")
-                .antMatchers(HttpMethod.PUT, "/api/products/**").hasAuthority("SHOP")
-                .antMatchers(HttpMethod.DELETE, "/api/products/**").hasAuthority("SHOP")
+                .antMatchers(HttpMethod.POST, "/api/products").hasRole("SHOP")
+                .antMatchers(HttpMethod.PUT, "/api/products/**").hasRole("SHOP")
+                .antMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("SHOP")
                 /* ORDERS */
-                .antMatchers(HttpMethod.GET, "/api/orders").hasAuthority("CLIENT")
-                .antMatchers(HttpMethod.GET, "/api/orders/all").hasAuthority("DELIVERY")
+                .antMatchers(HttpMethod.GET, "/api/orders").hasRole("CLIENT")
+                .antMatchers(HttpMethod.GET, "/api/orders/all").hasRole("DELIVERY")
                 .antMatchers(HttpMethod.GET, "/api/orders/{orderId:[\\d+]}")
                     .hasAnyAuthority("CLIENT", "DELIVERY")
-                .antMatchers(HttpMethod.POST, "/api/orders").hasAuthority("CLIENT")
+                .antMatchers(HttpMethod.POST, "/api/orders").hasRole("CLIENT")
+                .antMatchers(HttpMethod.PUT, "/api/orders/{orderId:[\\d+]}/status").hasRole("DELIVERY")
                 /* PICKUP POINTS */
                 .antMatchers(HttpMethod.GET, "/api/pickup/points/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/pickup/points").hasAuthority("DELIVERY")
+                .antMatchers(HttpMethod.POST, "/api/pickup/points").hasRole("DELIVERY")
+                .antMatchers(HttpMethod.PUT, "/api/pickup/points").hasRole("DELIVERY")
+                .antMatchers(HttpMethod.DELETE, "/api/pickup/points/{pointId:[\\d+]}").hasRole("DELIVERY")
                 /* LOGIN AND REGISTRATION */
                 .antMatchers("/register", "/login").permitAll()
                 .anyRequest().authenticated()
 //                /* SWAGGER */
-//                .antMatchers("/swagger-ui.html").permitAll()
+//               .antMatchers("/swagger-ui.html").permitAll()
 
         http.apply(JwtTokenFilterConfigurer(jwtTokenProvider))
     }
