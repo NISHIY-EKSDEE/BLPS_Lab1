@@ -36,6 +36,14 @@ data class SProductShort(
         val cost: Int
 )
 
+data class SProductShortForShop(
+        val orderProductId: Int,
+        val productName: String,
+        val status: String,
+        val cost: Int,
+)
+
+
 object SProductShortAssembler {
     fun buildDto(ent: SellersProduct): SProductShort {
         return SProductShort(

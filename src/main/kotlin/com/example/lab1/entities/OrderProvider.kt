@@ -21,4 +21,8 @@ class OrderProvider(
     fun saveOrder(order: Order): Order {
         return orderRepo.save(order)
     }
+
+    fun getAll(): List<Order> {
+        return orderRepo.findAll();
+    }
 }

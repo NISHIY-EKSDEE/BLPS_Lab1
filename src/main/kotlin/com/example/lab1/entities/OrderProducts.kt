@@ -19,5 +19,9 @@ class OrderProducts (
 
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     @ManyToOne
-    var order: Order
+    var order: Order,
+
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    @ManyToOne
+    var orderStatus: OrderProductStatus = OrderProductStatus()
 )

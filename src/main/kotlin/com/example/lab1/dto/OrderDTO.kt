@@ -15,6 +15,16 @@ data class OrderResponse(
         val pickupPointId: Int? //если самовывоз
 )
 
+data class OrderForShopResponse(
+        val id: Int,
+        val products: List<ProductResponseForShop>
+)
+
+data class ProductResponseForShop(
+        val product: SProductShortForShop,
+        val quantity: Int
+)
+
 data class ProductResponse(
         val product: SProductShort,
         val quantity: Int
@@ -46,6 +56,26 @@ object OrderResponseAssembler{
         ) }
     }
 }
+
+object OrderForShopResponseAssembler{
+    fun buildDto(ent: Order) : OrderForShopResponse {
+        return OrderForShopResponse(
+                ent.id,
+                products(ent.products)
+        )
+    }
+
+    private fun products(products: Collection<OrderProducts>) : List<ProductResponseForShop> {
+        return products.map {
+            val product = SProductShortForShop(
+                    it.id, it.product.product.name, it.orderStatus.name, it.product.cost
+            )
+
+            ProductResponseForShop(product, it.quantity)
+        }
+    }
+}
+
 
 data class OrderRequest (
             val products : List<BucketProductDTO>,

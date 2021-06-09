@@ -3,6 +3,7 @@ package com.example.lab1.service
 import com.example.lab1.dto.BucketProductDTO
 import com.example.lab1.dto.OrderRequest
 import com.example.lab1.entities.*
+import com.example.lab1.exception.ResourceNotFoundException
 import com.example.lab1.exception.WrongRequestException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -15,6 +16,7 @@ class OrderService(
         private var orderProvider : OrderProvider,
         private var orderStatusProvider: OrderStatusProvider,
         private var orderProductsProvider: OrderProductsProvider,
+        private var orderProductStatusProvider: OrderProductStatusProvider,
         private var userContextService: UserContextService
 ) {
 
@@ -24,13 +26,54 @@ class OrderService(
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
+    fun getAllOrders() : List<Order> {
+        return orderProvider.getAll();
+    }
+
+    fun getOne(orderId: Int) : Order {
+        return orderProvider.get(orderId)
+    }
+
+    fun getShopsOrders() : List<Order> {
+        val shop : User = userContextService.getUser()
+        val orders : List<Order> = orderProvider.getAll()
+
+        val shopsOrders = orders.filter { checkIfOrderContainsAnyShopsProducts(it, shop.id) }
+
+        if (shopsOrders.isNotEmpty()) {
+            return shopsOrders
+        }
+        else {
+            throw ResourceNotFoundException("No orders for this shop were found!")
+        }
+    }
+
+    fun getShopsOrder(orderId : Int): Order {
+        val shop : User = userContextService.getUser()
+        val order: Order = orderProvider.get(orderId)
+
+        val containsShopsProducts = checkIfOrderContainsAnyShopsProducts(order, shop.id)
+
+        if (containsShopsProducts) {
+            return order
+        }
+        else {
+            throw WrongRequestException("This order doesn't contain any shop's goods!")
+        }
+    }
+
+    private fun checkIfOrderContainsAnyShopsProducts(order: Order, shopId: Int) : Boolean {
+        return order.products
+                .any { orderProduct -> orderProduct.product.seller.user.id == shopId }
+    }
+
     fun getUsersOrders(): List<Order> {
         val client: User = userContextService.getUser()
 
         return orderProvider.getAllByUserId(client.id)
     }
 
-    fun getOrder(orderId: Int): Order {
+    fun getUsersOrder(orderId: Int): Order {
         val client: User = userContextService.getUser()
         val order: Order = orderProvider.get(orderId)
 
@@ -71,7 +114,8 @@ class OrderService(
                     OrderProducts(
                             quantity = it.quantity,
                             product = SellersProduct(id = it.sellerProductId),
-                            order = order
+                            order = order,
+                            orderStatus = OrderProductStatus(id = 1)
                     )
             )
 
@@ -87,6 +131,20 @@ class OrderService(
 
     private fun refreshOrderProduct(product: OrderProducts) {
         entityManager.refresh(product)
+    }
+
+    fun changeProductStatusInOrder(orderId: Int, orderProductId: Int, status: String) {
+        val status = orderProductStatusProvider.getByName(status)
+        val orderProduct = orderProductsProvider.getById(orderProductId)
+
+        if (orderProduct.order.id != orderId) {
+            throw WrongRequestException("This products isn't from this order!")
+        }
+
+        orderProduct.orderStatus = status
+
+        orderProductsProvider.save(orderProduct)
+
     }
 
 
