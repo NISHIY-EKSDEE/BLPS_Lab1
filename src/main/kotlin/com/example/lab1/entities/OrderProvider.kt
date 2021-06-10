@@ -25,4 +25,8 @@ class OrderProvider(
     fun getAll(): List<Order> {
         return orderRepo.findAll();
     }
+
+    fun getAllByStatus(status: OrderStatus): List<Order> {
+        return orderRepo.findAllByStatusEquals(status)
+    }
 }

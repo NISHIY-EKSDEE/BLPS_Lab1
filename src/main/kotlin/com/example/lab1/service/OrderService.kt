@@ -30,6 +30,11 @@ class OrderService(
         return orderProvider.getAll();
     }
 
+    fun getAllUnconfirmedOrders() : List<Order> {
+        val unconfirmedStatus = orderStatusProvider.get(4)
+        return orderProvider.getAllByStatus(unconfirmedStatus);
+    }
+
     fun getOne(orderId: Int) : Order {
         return orderProvider.get(orderId)
     }
