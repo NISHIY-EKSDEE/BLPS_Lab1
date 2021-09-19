@@ -1,47 +1,40 @@
 package com.example.lab1.config
 
-import com.example.lab1.jobs.CheckOrdersJob
-import com.example.lab1.jobs.CleanOrdersJob
+import com.example.lab1.config.info.job.CheckOrdersJobInfo
+import com.example.lab1.config.info.job.CleanOrdersJobInfo
+import com.example.lab1.config.info.job.JobInfo
+import com.example.lab1.config.info.trigger.CheckOrdersTriggerInfo
+import com.example.lab1.config.info.trigger.CleanOrdersTriggerInfo
+import com.example.lab1.config.info.trigger.TriggerInfo
 import org.quartz.Scheduler
-import org.quartz.JobBuilder
-import org.quartz.TriggerBuilder
 import org.quartz.impl.StdSchedulerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-
-import org.quartz.SimpleScheduleBuilder.*
 
 @Configuration
 class QuartzConfig {
 
+    @Autowired
+    lateinit var quartzConfigService: QuartzConfigService
+
     @Bean
     fun scheduler() : Scheduler {
         val scheduler : Scheduler = StdSchedulerFactory().scheduler
-        val checkOrdersJob = JobBuilder.newJob().ofType(CheckOrdersJob::class.java)
-                                                .storeDurably()
-                                                .withIdentity("CheckOrdersJob")
-                                                .withDescription("Check orders' product")
-                                                .build()
-        val cleanOrdersJob = JobBuilder.newJob().ofType(CleanOrdersJob::class.java)
-                                                .storeDurably()
-                                                .withIdentity("CleanOrdersJob_Job_Detail")
-                                                .withDescription("Clean pending orders")
-                                                .build()
 
-        val trigger1 = TriggerBuilder.newTrigger().forJob(checkOrdersJob)
-                .withIdentity("Qrtz_Trigger1")
-                .withDescription("Sample trigger1")
-                .withSchedule(simpleSchedule().repeatForever().withIntervalInHours(1))
-                .build()
+        scheduleJob(scheduler, CheckOrdersJobInfo, CheckOrdersTriggerInfo)
+        scheduleJob(scheduler, CleanOrdersJobInfo, CleanOrdersTriggerInfo)
 
-        val trigger2 = TriggerBuilder.newTrigger().forJob(cleanOrdersJob)
-                .withIdentity("Qrtz_Trigger2")
-                .withDescription("Sample trigger2")
-                .withSchedule(simpleSchedule().repeatForever().withIntervalInHours(24))
-                .build()
-        scheduler.scheduleJob(checkOrdersJob, trigger1)
-        scheduler.scheduleJob(cleanOrdersJob, trigger2)
         scheduler.start()
         return scheduler
     }
+
+    private fun scheduleJob(scheduler: Scheduler, jobInfo: JobInfo, triggerInfo: TriggerInfo) {
+        val jobDetails = quartzConfigService.createJobDetails(jobInfo)
+        val trigger = quartzConfigService.createTrigger(jobDetails, triggerInfo)
+
+        scheduler.scheduleJob(jobDetails, trigger)
+    }
+
+
 }
