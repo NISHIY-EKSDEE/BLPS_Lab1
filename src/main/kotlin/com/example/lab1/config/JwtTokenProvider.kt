@@ -37,24 +37,6 @@ class JwtTokenProvider(
             Jwts.builder().setClaims(it).setIssuedAt(now).setExpiration(Date(now.time + validityInMilliseconds))
                     .signWith(SignatureAlgorithm.HS512, secretKey).compact()
         }
-
-
-
-//        val claims = Jwts.claims().setSubject(username)
-//        claims["auth"] = roles.stream().map{
-//            s: Role -> SimpleGrantedAuthority(s.authority)
-//        }.filter(Objects::nonNull).collect(Collectors.toList())
-//
-//        val now = Date()
-//
-//        val validity = Date(now.time + validityInMilliseconds)
-//
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setIssuedAt(now)
-//                .setExpiration(validity)
-//                .signWith(SignatureAlgorithm.HS256, secretKey)
-//                .compact()
     }
 
     fun getAuthentication(token: String?): Authentication {

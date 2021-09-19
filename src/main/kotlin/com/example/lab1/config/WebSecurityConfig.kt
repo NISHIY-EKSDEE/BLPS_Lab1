@@ -20,8 +20,6 @@ class WebSecurityConfig(
     override fun configure(http: HttpSecurity) {
         http.csrf().disable()
 
-//        http.authorizeRequests().antMatchers("/").permitAll();
-
         http.authorizeRequests()
                 /* PRODUCTS */
                 .antMatchers(HttpMethod.GET, "/api/products/**").permitAll()
@@ -43,8 +41,6 @@ class WebSecurityConfig(
                 /* LOGIN AND REGISTRATION */
                 .antMatchers("/register", "/login").permitAll()
                 .anyRequest().authenticated()
-//                /* SWAGGER */
-//               .antMatchers("/swagger-ui.html").permitAll()
 
         http.apply(JwtTokenFilterConfigurer(jwtTokenProvider))
     }
@@ -59,6 +55,6 @@ class WebSecurityConfig(
 
     @Bean
     fun passwordEncoder() : BCryptPasswordEncoder {
-        return BCryptPasswordEncoder();
+        return BCryptPasswordEncoder()
     }
 }

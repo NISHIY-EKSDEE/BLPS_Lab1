@@ -35,8 +35,4 @@ class UserService {
         }
         else throw WrongRequestException("Password is wrong!")
     }
-
-    fun getUserByUsername(username: String) : User? {
-        return userRepo.findByUsername(username)
-    }
 }

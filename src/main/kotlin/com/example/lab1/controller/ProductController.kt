@@ -48,25 +48,6 @@ class ProductController(
         return SellerProductResponseAssembler.buildDto(product)
     }
 
-//    /**
-//     * Метод, который позволяет пользователю с ролью CLIENT найти информацию о продукте, используя
-//     * набор тегов.
-//     */
-//    @GetMapping("/bytags")
-//    fun bytags(@RequestBody tagsForm : TagsForm) : ResponseEntity<Collection<SellerProductDTO>> {
-//        val listOfTags: MutableSet<TagEntity> = HashSet()
-//
-//        for (tag in tagsForm.tags) {
-//            val tagEntities = tagRepo.findAllByName(tag)
-//            listOfTags.addAll(tagEntities)
-//        }
-//
-//        val productsByTags = productTagService.getProductsByTags(listOfTags)
-//        val productSellerDTOs = productTagService.getSellerProductsDTOByProducts(productsByTags)
-//
-//        return ResponseEntity(productSellerDTOs, HttpStatus.OK)
-//    }
-
     /**
      * Метод, который доступен только пользователю с ролью SHOP. Позволяет ДОБАВИТЬ
      * новый продукт.
@@ -89,7 +70,7 @@ class ProductController(
     fun update(@RequestBody productRequest: ProductRequest, @PathVariable productId: Int) {
         productService.modify(productRequest, productId)
     }
-//
+
     /**
      * Метод, который доступен только пользователю с ролью SHOP.
      * Данный метод позволяет пользователю УДАЛИТЬ какой-то продукт, который
