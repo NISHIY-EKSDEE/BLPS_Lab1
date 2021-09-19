@@ -13,23 +13,17 @@ import org.springframework.web.bind.annotation.*
 class PickUpPointsAllController(
     private var pickupPointService: PickupPointService
 ) {
-    /**
-     * ALL могут посмотреть список всех точек откуда можно забрать товар.
-     */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun list(): List<PickupPointResponse> {
+    fun listAllPickupPoints(): List<PickupPointResponse> {
         val all = pickupPointService.getAllAvailablePoints();
 
         return all.map(PickupPointAssembler::buildDto)
     }
 
-    /**
-     * ALL могут посмотреть подробную информацию о точке, откуда можно забрать товар
-     */
     @GetMapping("/{pointId}")
     @ResponseStatus(HttpStatus.OK)
-    fun getPoint(@PathVariable pointId: Int): PickupPointResponse {
+    fun getPointById(@PathVariable pointId: Int): PickupPointResponse {
         val resultPoint = pickupPointService.getPoint(pointId)
 
         return PickupPointAssembler.buildDto(resultPoint)

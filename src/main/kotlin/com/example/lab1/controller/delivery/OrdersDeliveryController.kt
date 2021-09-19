@@ -14,12 +14,9 @@ import org.springframework.web.bind.annotation.*
 class OrdersDeliveryController(
         private var orderService: OrderService
 ) {
-    /**
-     * Этот метод используется DELIVERY для того, чтобы изменить статус заказа.
-     */
     @PutMapping("/{orderId}/status")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun changeStatus(@PathVariable orderId: Int, @RequestBody statusRequest: StatusRequest) {
+    fun changeStatusById(@PathVariable orderId: Int, @RequestBody statusRequest: StatusRequest) {
         orderService.changeStatus(orderId, statusRequest.statusId)
     }
 
@@ -30,7 +27,7 @@ class OrdersDeliveryController(
     }
 
     @GetMapping("/{orderId}")
-    fun getOne(@PathVariable orderId: Int) : OrderResponse {
+    fun getOrderById(@PathVariable orderId: Int) : OrderResponse {
         val order = orderService.getOne(orderId)
 
         return OrderResponseAssembler.buildDto(order)

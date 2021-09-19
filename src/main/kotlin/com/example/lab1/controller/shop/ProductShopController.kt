@@ -14,10 +14,6 @@ class ProductShopController(
         private var productService : ProductService
 ) {
 
-    /**
-     * Метод, который доступен только пользователю с ролью SHOP. Позволяет ДОБАВИТЬ
-     * новый продукт.
-     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createProduct(@RequestBody productRequest: ProductRequest) : SProductResponse {
@@ -26,25 +22,15 @@ class ProductShopController(
         return SellerProductResponseAssembler.buildDto(product)
     }
 
-    /**
-     * Метод, который доступен только пользователю с ролью SHOP.
-     * Данный метод позволяет пользователю ИЗМЕНИТЬ какой-то продукт, который
-     * ему принадлежит.
-     */
     @PutMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun update(@RequestBody productRequest: ProductRequest, @PathVariable productId: Int) {
+    fun updateProductById(@RequestBody productRequest: ProductRequest, @PathVariable productId: Int) {
         productService.modify(productRequest, productId)
     }
-//
-    /**
-     * Метод, который доступен только пользователю с ролью SHOP.
-     * Данный метод позволяет пользователю УДАЛИТЬ какой-то продукт, который
-     * ему принадлежит.
-     */
+
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable productId: Int) {
+    fun deleteProductById(@PathVariable productId: Int) {
         productService.delete(productId)
     }
 }
