@@ -25,15 +25,9 @@ class ProductClientController(
             @RequestParam(required = false, defaultValue = "0") min: Int,
             @RequestParam(required = false, defaultValue = Int.MAX_VALUE.toString()) max: Int
     ) : List<SProductResponse> {
-        val all : List<SellersProduct> = productService.getAll()
-                .filter {
-                    it.product.name.contains(q, true) ||
-                            it.product.description.contains(q, true) &&
-                            it.cost in min..max &&
-                            it.seller.name.contains(s, true)
-                }
+        val filteredList = productService.getAllWithFilter(q, s, min, max)
 
-        return all.map(SellerProductResponseAssembler::buildDto)
+        return filteredList.map(SellerProductResponseAssembler::buildDto)
     }
 
     /**

@@ -22,6 +22,18 @@ class ProductService(
         return sellersProductProvider.getAll()
     }
 
+    fun getAllWithFilter(query: String, sellerName: String, min: Int, max: Int): List<SellersProduct> {
+        val filteredList : List<SellersProduct> = getAll()
+                .filter {
+                    it.product.name.contains(query, true) ||
+                    it.product.description.contains(query, true) &&
+                    it.cost in min..max &&
+                    it.seller.name.contains(sellerName, true)
+                }
+
+        return filteredList
+    }
+
     fun getProduct(id: Int): SellersProduct {
         return sellersProductProvider.get(id)
     }
@@ -59,6 +71,5 @@ class ProductService(
 
             sellersProductProvider.save(sproduct)
         } ?: throw RuntimeException("Transaction went wrong!")
-
     }
 }
