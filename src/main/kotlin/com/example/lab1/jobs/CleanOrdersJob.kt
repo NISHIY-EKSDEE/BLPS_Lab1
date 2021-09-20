@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate
 import java.time.Period
 
+/**
+ * Проверяем статус заказа, с периодичностью заданной в конфигурации. Если заказ в течении некоторого времени не был
+ * подтверждён, то меняем статус заказа на отменён. 
+ *
+ */
 @Component
 class CleanOrdersJob : Job {
 

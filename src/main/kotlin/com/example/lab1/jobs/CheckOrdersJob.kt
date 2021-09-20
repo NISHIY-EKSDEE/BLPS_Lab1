@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import com.example.lab1.service.OrderService
 
+/**
+ * Job, которая проверяет статус продуктов в заказе. Если все продукты в заказе были подтверждены, то меняем статус
+ * заказа на подтверждён.
+ */
 @Component
 class CheckOrdersJob : Job {
 
